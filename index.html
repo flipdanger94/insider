@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discord Insider — новости, слухи и драмы Discord-серверов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blurple:#5865F2;
+  --blurple-2:#7983F5;
+  --bg-deep:#0B0D12;
+  --bg-panel:#111827;
+  --bg-elev:#18191C;
+  --bg-card:#1B1F2A;
+  --line:rgba(255,255,255,0.07);
+  --text:#F5F6FA;
+  --text-mut:#9BA1AE;
+  --text-dim:#6B7280;
+  --danger:#ED4245;
+  --success:#23A55A;
+  --warn:#FAA61A;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(88,101,242,0.18), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(88,101,242,0.10), transparent 55%),
+    var(--bg-deep);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+.display{font-family:'Space Grotesk',sans-serif;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--blurple);color:white;}
+
+/* ===== disclaimer strip ===== */
+.disclaimer{
+  background:rgba(250,166,26,0.09);
+  border-bottom:1px solid rgba(250,166,26,0.2);
+  color:#FAC468;
+  font-size:12.5px;
+  text-align:center;
+  padding:8px 16px;
+  letter-spacing:.2px;
+}
+.disclaimer b{color:#FFD68A;}
+
+/* ===== header ===== */
+header{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(20px) saturate(160%);
+  background:rgba(11,13,18,0.72);
+  border-bottom:1px solid var(--line);
+}
+.nav-wrap{max-width:1280px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:28px;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:19px;white-space:nowrap;}
+.logo .bracket{color:var(--blurple-2);font-family:'JetBrains Mono';font-weight:500;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--blurple);box-shadow:0 0 12px var(--blurple);animation:pulse 2.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+nav{display:flex;gap:22px;font-size:14px;color:var(--text-mut);flex:1;}
+nav a{transition:color .2s;position:relative;padding:6px 0;}
+nav a:hover{color:var(--text);}
+nav a.active{color:var(--text);}
+nav a.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--blurple);border-radius:2px;}
+.search-box{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg-elev);border:1px solid var(--line);
+  border-radius:12px;padding:9px 14px;width:230px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.search-box:hover, .search-box:focus-within{border-color:rgba(88,101,242,0.5);box-shadow:0 0 0 3px rgba(88,101,242,0.12);}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:13.5px;width:100%;}
+.search-box input::placeholder{color:var(--text-dim);}
+.search-box svg{flex-shrink:0;opacity:.6;}
+.btn-primary{
+  background:var(--blurple);color:white;border:none;padding:10px 18px;border-radius:12px;
+  font-weight:600;font-size:13.5px;cursor:pointer;transition:transform .15s, box-shadow .15s, background .2s;
+  box-shadow:0 6px 20px rgba(88,101,242,0.35);
+}
+.btn-primary:hover{background:var(--blurple-2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(88,101,242,0.5);}
+
+/* ===== hero ===== */
+.hero{max-width:1280px;margin:0 auto;padding:56px 28px 20px;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono';font-size:11.5px;color:var(--blurple-2);
+  background:rgba(88,101,242,0.1);border:1px solid rgba(88,101,242,0.25);
+  padding:6px 12px;border-radius:20px;margin-bottom:20px;letter-spacing:.5px;
+}
+.eyebrow .live-dot{width:6px;height:6px;border-radius:50%;background:var(--danger);animation:pulse 1.4s infinite;}
+.hero h1{
+  font-family:'Space Grotesk';font-weight:700;font-size:52px;line-height:1.08;letter-spacing:-1px;
+  margin-bottom:18px;
+}
+.hero h1 span{color:var(--blurple-2);}
+.hero p{color:var(--text-mut);font-size:16.5px;line-height:1.6;max-width:520px;margin-bottom:28px;}
+.hero-actions{display:flex;gap:12px;}
+.btn-ghost{
+  background:var(--bg-elev);border:1px solid var(--line);color:var(--text);
+  padding:10px 18px;border-radius:12px;font-weight:600;font-size:13.5px;cursor:pointer;transition:.2s;
+}
+.btn-ghost:hover{background:var(--bg-card);border-color:rgba(255,255,255,0.15);}
+
+.hero-visual{
+  background:linear-gradient(160deg, var(--bg-card), var(--bg-panel));
+  border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:22px;position:relative;overflow:hidden;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+}
+.hero-visual::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 80% 0%, rgba(88,101,242,0.25), transparent 60%);
+  pointer-events:none;
+}
+.hv-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:12px;color:var(--text-dim);}
+.hv-title{font-family:'Space Grotesk';font-weight:600;font-size:14px;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.hv-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px;}
+.hv-row:last-child{border-bottom:none;}
+.hv-server{display:flex;align-items:center;gap:10px;}
+.hv-avatar{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--blurple),var(--blurple-2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.hv-badge{font-family:'JetBrains Mono';font-size:11px;padding:3px 9px;border-radius:8px;font-weight:600;}
+.hv-badge.up{color:var(--success);background:rgba(35,165,90,0.12);}
+.hv-badge.hot{color:var(--danger);background:rgba(237,66,69,0.12);}
+
+/* ===== ticker (signature element) ===== */
+.ticker-wrap{
+  max-width:1280px;margin:24px auto 0;padding:0 28px;
+}
+.ticker{
+  border:1px solid var(--line);background:var(--bg-elev);
+  border-radius:var(--r-md);padding:0;display:flex;align-items:stretch;overflow:hidden;
+}
+.ticker-label{
+  background:var(--blurple);color:white;font-family:'JetBrains Mono';font-size:11.5px;font-weight:600;
+  display:flex;align-items:center;gap:8px;padding:0 16px;white-space:nowrap;letter-spacing:.5px;
+}
+.ticker-track-wrap{overflow:hidden;flex:1;position:relative;}
+.ticker-track{display:flex;gap:44px;white-space:nowrap;padding:12px 24px;animation:scroll 32s linear infinite;}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{font-size:13px;color:var(--text-mut);display:flex;align-items:center;gap:8px;}
+.ticker-item b{color:var(--text);font-weight:600;}
+.tick-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+
+/* ===== section shells ===== */
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px;}
+.section{padding:52px 0 8px;}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:26px;}
+.section-head h2{font-family:'Space Grotesk';font-size:24px;font-weight:600;display:flex;align-items:center;gap:10px;}
+.section-head .see-all{font-size:13px;color:var(--blurple-2);font-weight:600;}
+.section-sub{color:var(--text-dim);font-size:13.5px;margin-top:4px;}
+
+/* ===== layout: feed + sidebar ===== */
+.layout{display:grid;grid-template-columns:1fr 320px;gap:36px;align-items:start;}
+
+/* category chips */
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:30px;}
+.chip{
+  font-size:12.5px;padding:7px 14px;border-radius:20px;border:1px solid var(--line);
+  color:var(--text-mut);cursor:pointer;transition:.2s;background:var(--bg-elev);
+}
+.chip:hover{border-color:rgba(88,101,242,0.4);color:var(--text);}
+.chip.active{background:var(--blurple);color:white;border-color:var(--blurple);}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.card{
+  background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;cursor:pointer;transition:transform .25s, border-color .25s, box-shadow .25s;
+  display:flex;flex-direction:column;
+}
+.card:hover{transform:translateY(-4px);border-color:rgba(88,101,242,0.35);box-shadow:0 20px 40px -16px rgba(0,0,0,0.5);}
+.card-img{
+  height:170px;position:relative;background:linear-gradient(135deg,#232A3D,#171B26);
+  display:flex;align-items:flex-end;padding:14px;
+}
+.card-img .cat-tag{
+  font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;
+  font-family:'JetBrains Mono';letter-spacing:.3px;backdrop-filter:blur(8px);
+}
+.cat-news{background:rgba(88,101,242,0.85);color:#fff;}
+.cat-rumor{background:rgba(250,166,26,0.85);color:#1a1a1a;}
+.cat-drama{background:rgba(237,66,69,0.88);color:#fff;}
+.cat-leak{background:rgba(88,101,242,0.2);color:var(--blurple-2);border:1px solid rgba(88,101,242,0.4);}
+.card-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column;}
+.card-body h3{font-size:15.5px;font-weight:600;line-height:1.4;margin-bottom:10px;}
+.card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid var(--line);}
+.author{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);}
+.author .av{width:20px;height:20px;border-radius:50%;background:var(--blurple-2);}
+.stats{display:flex;gap:12px;font-size:11.5px;color:var(--text-dim);font-family:'JetBrains Mono';}
+.hype{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);margin-top:10px;}
+.hype-bar{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden;}
+.hype-fill{height:100%;border-radius:4px;}
+
+/* sidebar */
+.side-block{
+  background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:20px;margin-bottom:20px;
+}
+.side-block h4{font-family:'Space Grotesk';font-size:14.5px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+.rank-row:last-child{border-bottom:none;}
+.rank-num{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);width:18px;}
+.rank-info{flex:1;}
+.rank-info .name{font-size:13.5px;font-weight:600;}
+.rank-info .members{font-size:11px;color:var(--text-dim);}
+.rank-trend{font-size:11px;font-family:'JetBrains Mono';font-weight:600;}
+.rank-trend.up{color:var(--success);}
+.rank-trend.down{color:var(--danger);}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;}
+.tag-cloud span{
+  font-size:11.5px;color:var(--text-mut);background:var(--bg-elev);border:1px solid var(--line);
+  padding:5px 10px;border-radius:8px;cursor:pointer;transition:.2s;
+}
+.tag-cloud span:hover{color:var(--blurple-2);border-color:rgba(88,101,242,0.4);}
+.filter-row{margin-bottom:16px;}
+.filter-row label{font-size:11.5px;color:var(--text-dim);display:block;margin-bottom:8px;font-family:'JetBrains Mono';letter-spacing:.3px;text-transform:uppercase;}
+.filter-opts{display:flex;flex-wrap:wrap;gap:6px;}
+.filter-opts button{
+  font-size:12px;padding:6px 11px;border-radius:8px;border:1px solid var(--line);background:var(--bg-elev);color:var(--text-mut);cursor:pointer;transition:.2s;
+}
+.filter-opts button.active{background:rgba(88,101,242,0.15);color:var(--blurple-2);border-color:rgba(88,101,242,0.4);}
+.hot-rumor{padding:12px 0;border-bottom:1px solid var(--line);}
+.hot-rumor:last-child{border-bottom:none;padding-bottom:0;}
+.hot-rumor p{font-size:13px;line-height:1.5;margin-bottom:6px;}
+.hot-rumor .meta{font-size:11px;color:var(--text-dim);display:flex;gap:10px;font-family:'JetBrains Mono';}
+
+/* pagination */
+.pagination{display:flex;justify-content:center;gap:8px;margin:44px 0 60px;}
+.pagination button{
+  width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg-elev);
+  color:var(--text-mut);cursor:pointer;font-size:13px;font-family:'JetBrains Mono';transition:.2s;
+}
+.pagination button:hover{border-color:rgba(88,101,242,0.4);color:var(--text);}
+.pagination button.active{background:var(--blurple);color:white;border-color:var(--blurple);}
+
+/* footer */
+footer{border-top:1px solid var(--line);background:var(--bg-panel);margin-top:40px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding:52px 28px;max-width:1280px;margin:0 auto;}
+.footer-grid h5{font-size:13px;color:var(--text);margin-bottom:16px;font-family:'Space Grotesk';}
+.footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-grid ul a{font-size:13px;color:var(--text-dim);transition:.2s;}
+.footer-grid ul a:hover{color:var(--blurple-2);}
+.footer-note{color:var(--text-dim);font-size:12px;line-height:1.7;max-width:340px;}
+.footer-bottom{border-top:1px solid var(--line);padding:20px 28px;max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);}
+
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr;}
+  .layout{grid-template-columns:1fr;}
+  .cards{grid-template-columns:1fr;}
+  nav{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="disclaimer">⚠️ <b>Discord Insider</b> — развлекательный проект. Все материалы, слухи и «утечки» публикуются исключительно в развлекательных целях и не являются официальной информацией Discord или упомянутых серверов.</div>
+
+<header>
+  <div class="nav-wrap">
+    <div class="logo"><span class="bracket">&lt;/&gt;</span>Insider<span class="logo-dot"></span></div>
+    <nav>
+      <a href="#" class="active">Новости</a>
+      <a href="#">Слухи</a>
+      <a href="#">Скандалы</a>
+      <a href="#">Утечки</a>
+      <a href="#">Рейтинг</a>
+      <a href="#">Ивенты</a>
+      <a href="#">Мемы</a>
+    </nav>
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input type="text" placeholder="Поиск новостей, серверов...">
+    </div>
+    <button class="btn-primary">Войти</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div>
+    <div class="eyebrow"><span class="live-dot"></span> LIVE · обновляется каждые 10 минут</div>
+    <h1 class="display">Всё, что <span>гудит</span><br>в мире Discord-серверов</h1>
+    <p>Новости, слухи, драмы и рейтинги серверов — собрано редакцией и сообществом. Только развлечения, без официальных заявлений.</p>
+    <div class="hero-actions">
+      <button class="btn-primary">Смотреть новости</button>
+      <button class="btn-ghost">Топ серверов →</button>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hv-head"><span>СЕЙЧАС В ТРЕНДЕ</span><span class="mono">12:41 UTC+5</span></div>
+    <div class="hv-title">🔥 Пульс серверов</div>
+    <div class="hv-row">
+      <div class="hv-server"><div class="hv-avatar">MC</div><span>MythCraft RP</span></div>
+      <span class="hv-badge hot">+2 300%</span>
+    </div>
+    <div class="hv-row">
+      <div class="hv-server"><div class="hv-avatar">NX</div><span>Nexus Gaming</span></div>
+      <span class="hv-badge up">↑ 18 400</span>
+    </div>
+    <div class="hv-row">
+      <div class="hv-server"><div class="hv-avatar">VL</div><span>Velvet Lounge</span></div>
+      <span class="hv-badge hot">drama ×5</span>
+    </div>
+    <div class="hv-row">
+      <div class="hv-server"><div class="hv-avatar">AB</div><span>Ashborne RP</span></div>
+      <span class="hv-badge up">новый лидер</span>
+    </div>
+  </div>
+</div>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-label">🔥 ГОРЯЧЕЕ</div>
+    <div class="ticker-track-wrap">
+      <div class="ticker-track">
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--danger)"></span>Слух: <b>админ Velvet Lounge</b> покидает сервер — подтверждения нет</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--warn)"></span><b>Nexus Gaming</b> анонсирует giveaway на выходных</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--success)"></span><b>MythCraft RP</b> обновил правила ролевых зон</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--blurple-2)"></span>Утечка скринов из закрытого чата — редакция не подтверждает</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--danger)"></span>Слух: <b>админ Velvet Lounge</b> покидает сервер — подтверждения нет</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--warn)"></span><b>Nexus Gaming</b> анонсирует giveaway на выходных</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--success)"></span><b>MythCraft RP</b> обновил правила ролевых зон</span>
+        <span class="ticker-item"><span class="tick-dot" style="background:var(--blurple-2)"></span>Утечка скринов из закрытого чата — редакция не подтверждает</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap section">
+  <div class="chips">
+    <div class="chip active">Все</div>
+    <div class="chip">Новости</div>
+    <div class="chip">Слухи</div>
+    <div class="chip">Скандалы</div>
+    <div class="chip">Обновления серверов</div>
+    <div class="chip">Интервью</div>
+    <div class="chip">Мемы</div>
+    <div class="chip">Драмы</div>
+    <div class="chip">Администрация</div>
+    <div class="chip">Игровые сервера</div>
+    <div class="chip">RP сервера</div>
+    <div class="chip">Giveaway</div>
+    <div class="chip">Ивенты</div>
+    <div class="chip">Утечки</div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="section-head">
+        <h2>📰 Последние публикации</h2>
+        <a class="see-all" href="#">Все новости →</a>
+      </div>
+      <div class="cards" id="feed"></div>
+      <div class="pagination">
+        <button>‹</button><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>12</button><button>›</button>
+      </div>
+    </div>
+
+    <aside>
+      <div class="side-block">
+        <h4>🎛 Фильтры</h4>
+        <div class="filter-row">
+          <label>Категория</label>
+          <div class="filter-opts">
+            <button class="active">Все</button><button>Слухи</button><button>Драмы</button><button>Утечки</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <label>Период</label>
+          <div class="filter-opts">
+            <button class="active">24 часа</button><button>Неделя</button><button>Месяц</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <label>Сортировка</label>
+          <div class="filter-opts">
+            <button class="active">Популярное</button><button>Новое</button><button>Обсуждаемое</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-block">
+        <h4>🏆 Рейтинг серверов</h4>
+        <div class="rank-row"><span class="rank-num">01</span><div class="rank-info"><div class="name">Nexus Gaming</div><div class="members">184 200 участников</div></div><span class="rank-trend up">↑ 3</span></div>
+        <div class="rank-row"><span class="rank-num">02</span><div class="rank-info"><div class="name">MythCraft RP</div><div class="members">96 800 участников</div></div><span class="rank-trend up">↑ 12</span></div>
+        <div class="rank-row"><span class="rank-num">03</span><div class="rank-info"><div class="name">Ashborne RP</div><div class="members">71 340 участников</div></div><span class="rank-trend down">↓ 1</span></div>
+        <div class="rank-row"><span class="rank-num">04</span><div class="rank-info"><div class="name">Velvet Lounge</div><div class="members">54 010 участников</div></div><span class="rank-trend up">↑ 7</span></div>
+      </div>
+
+      <div class="side-block">
+        <h4>💬 Горячие слухи</h4>
+        <div class="hot-rumor"><p>Ходят слухи о слиянии двух крупных RP-серверов после недавнего giveaway-скандала.</p><div class="meta"><span>🔥 812 обсуждений</span><span>2 ч назад</span></div></div>
+        <div class="hot-rumor"><p>Новый «тайный» ивент готовится на Nexus Gaming — детали пока не раскрыты.</p><div class="meta"><span>🔥 540 обсуждений</span><span>5 ч назад</span></div></div>
+        <div class="hot-rumor"><p>Утечка: часть модераторов Ashborne RP покинула сервер после конфликта.</p><div class="meta"><span>🔥 388 обсуждений</span><span>9 ч назад</span></div></div>
+      </div>
+
+      <div class="side-block">
+        <h4>🏷 Популярные теги</h4>
+        <div class="tag-cloud">
+          <span>#drama</span><span>#leak</span><span>#giveaway</span><span>#rp</span><span>#admin</span><span>#discord</span><span>#update</span><span>#meme</span><span>#scandal</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="logo" style="margin-bottom:14px;"><span class="bracket">&lt;/&gt;</span>Insider<span class="logo-dot"></span></div>
+      <p class="footer-note">Discord Insider — развлекательный портал о новостях и слухах вокруг Discord-серверов. Мы не связаны с Discord Inc. Весь контент — сатира, слухи и мнения сообщества, не официальная информация.</p>
+    </div>
+    <div>
+      <h5>Разделы</h5>
+      <ul><a href="#">Новости</a><a href="#">Слухи</a><a href="#">Скандалы</a><a href="#">Рейтинг серверов</a><a href="#">Утечки</a></ul>
+    </div>
+    <div>
+      <h5>Сообщество</h5>
+      <ul><a href="#">Giveaway</a><a href="#">Ивенты</a><a href="#">Мемы</a><a href="#">Интервью</a></ul>
+    </div>
+    <div>
+      <h5>О проекте</h5>
+      <ul><a href="#">О нас</a><a href="#">Правила</a><a href="#">Дисклеймер</a><a href="#">Контакты</a></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Discord Insider · Развлекательный проект</span>
+    <span>Не является официальным ресурсом Discord Inc.</span>
+  </div>
+</footer>
+
+<script>
+const CATS = [
+  {tag:'Слухи', cls:'cat-rumor'},
+  {tag:'Новости', cls:'cat-news'},
+  {tag:'Драмы', cls:'cat-drama'},
+  {tag:'Утечки', cls:'cat-leak'},
+];
+const HYPE = [
+  {label:'Подтверждено', color:'var(--success)', w:'95%'},
+  {label:'Вероятно', color:'var(--blurple-2)', w:'65%'},
+  {label:'Неподтверждено', color:'var(--warn)', w:'40%'},
+  {label:'Слух', color:'var(--danger)', w:'25%'},
+];
+const TITLES = [
+  'Крупнейший RP-сервер объявил о смене администрации',
+  'Слух: закрытая ветка сообщества готовит собственный сервер',
+  'Скандал вокруг giveaway набирает обороты — участники требуют объяснений',
+  'Утечка скриншотов вызвала волну обсуждений в сообществе',
+  'Новый рекорд онлайна: сервер собрал 40 000 участников за сутки',
+  'Модератор рассказал, как выглядит будильник разработчиков ботов',
+  'Интервью: основатель Ashborne RP о будущем ролевых серверов',
+  'Мем-волна: как один стикер стал легендой недели',
+];
+const feed = document.getElementById('feed');
+TITLES.forEach((title,i)=>{
+  const cat = CATS[i%CATS.length];
+  const hype = HYPE[i%HYPE.length];
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = `
+    <div class="card-img"><span class="cat-tag ${cat.cls}">${cat.tag.toUpperCase()}</span></div>
+    <div class="card-body">
+      <h3>${title}</h3>
+      <div class="hype"><span class="mono">${hype.label}</span><div class="hype-bar"><div class="hype-fill" style="width:${hype.w};background:${hype.color}"></div></div></div>
+      <div class="card-meta">
+        <div class="author"><div class="av"></div><span>ред. Insider · 4 мин чтения</span></div>
+        <div class="stats"><span>👁 ${(1.2+i*0.3).toFixed(1)}k</span><span>💬 ${12+i*7}</span></div>
+      </div>
+    </div>`;
+  feed.appendChild(card);
+});
+</script>
+
+</body>
+</html>

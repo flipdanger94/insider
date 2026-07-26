@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Слух: крупный RP-сервер готовит тайное слияние — Discord Insider</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blurple:#5865F2; --blurple-2:#7983F5;
+  --bg-deep:#0B0D12; --bg-panel:#111827; --bg-elev:#18191C; --bg-card:#1B1F2A;
+  --line:rgba(255,255,255,0.07);
+  --text:#F5F6FA; --text-mut:#9BA1AE; --text-dim:#6B7280;
+  --danger:#ED4245; --success:#23A55A; --warn:#FAA61A;
+  --r-lg:22px; --r-md:16px; --r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:radial-gradient(1200px 600px at 15% -10%, rgba(88,101,242,0.16), transparent 60%), var(--bg-deep);
+  color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--blurple);color:white;}
+
+.disclaimer{background:rgba(250,166,26,0.09);border-bottom:1px solid rgba(250,166,26,0.2);color:#FAC468;font-size:12.5px;text-align:center;padding:8px 16px;}
+.disclaimer b{color:#FFD68A;}
+
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(20px) saturate(160%);background:rgba(11,13,18,0.72);border-bottom:1px solid var(--line);}
+.nav-wrap{max-width:1000px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:20px;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:18px;}
+.logo .bracket{color:var(--blurple-2);font-family:'JetBrains Mono';font-weight:500;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--blurple);box-shadow:0 0 12px var(--blurple);}
+.breadcrumb{font-size:13px;color:var(--text-dim);margin-left:auto;}
+.breadcrumb a:hover{color:var(--blurple-2);}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 28px;}
+
+.article-head{padding:44px 0 24px;}
+.cat-tag{display:inline-block;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;font-family:'JetBrains Mono';letter-spacing:.3px;background:rgba(250,166,26,0.15);color:var(--warn);border:1px solid rgba(250,166,26,0.3);margin-bottom:18px;}
+h1{font-family:'Space Grotesk';font-size:36px;font-weight:700;line-height:1.2;letter-spacing:-.5px;margin-bottom:20px;}
+.article-meta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;color:var(--text-dim);font-size:13px;}
+.article-meta .author{display:flex;align-items:center;gap:10px;color:var(--text-mut);}
+.author .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blurple),var(--blurple-2));}
+.dot-sep{width:3px;height:3px;border-radius:50%;background:var(--text-dim);}
+
+.hype-banner{
+  display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:14px 18px;margin:22px 0;
+}
+.hype-banner .lbl{font-size:12px;color:var(--text-dim);font-family:'JetBrains Mono';white-space:nowrap;}
+.hype-bar{flex:1;height:6px;border-radius:6px;background:var(--line);overflow:hidden;}
+.hype-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--warn),#FFD68A);width:40%;}
+.hype-val{font-size:12px;font-weight:700;color:var(--warn);font-family:'JetBrains Mono';white-space:nowrap;}
+
+.cover{
+  height:360px;border-radius:var(--r-lg);margin:8px 0 32px;
+  background:linear-gradient(135deg,#232A3D,#171B26);
+  border:1px solid var(--line);position:relative;overflow:hidden;
+}
+.cover::after{content:'';position:absolute;inset:0;background:radial-gradient(400px 200px at 80% 20%, rgba(88,101,242,0.25), transparent 60%);}
+
+.content{font-size:16.5px;line-height:1.85;color:#DDE1E8;}
+.content p{margin-bottom:22px;}
+.content h3{font-family:'Space Grotesk';font-size:22px;margin:36px 0 16px;color:var(--text);}
+.content blockquote{
+  border-left:3px solid var(--blurple); padding:4px 20px; margin:24px 0;
+  color:var(--text-mut); font-style:italic;
+}
+.disclaimer-inline{
+  background:rgba(88,101,242,0.08); border:1px solid rgba(88,101,242,0.2); border-radius:var(--r-md);
+  padding:16px 20px; font-size:13.5px; color:var(--text-mut); margin:28px 0;
+}
+
+.tags{display:flex;gap:10px;flex-wrap:wrap;margin:32px 0;}
+.tags span{font-size:12.5px;color:var(--text-mut);background:var(--bg-elev);border:1px solid var(--line);padding:7px 13px;border-radius:20px;cursor:pointer;transition:.2s;}
+.tags span:hover{color:var(--blurple-2);border-color:rgba(88,101,242,0.4);}
+
+.engage-bar{
+  display:flex;align-items:center;justify-content:space-between;padding:20px 0;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin:20px 0 40px;
+}
+.reactions{display:flex;gap:10px;}
+.reactions button{
+  background:var(--bg-elev);border:1px solid var(--line);border-radius:20px;padding:9px 16px;font-size:14px;color:var(--text-mut);cursor:pointer;display:flex;align-items:center;gap:8px;transition:.2s;
+}
+.reactions button:hover{border-color:rgba(88,101,242,0.4);color:var(--text);transform:translateY(-1px);}
+.reactions button.liked{background:rgba(88,101,242,0.15);color:var(--blurple-2);border-color:rgba(88,101,242,0.4);}
+.share{display:flex;gap:8px;}
+.share button{width:38px;height:38px;border-radius:10px;background:var(--bg-elev);border:1px solid var(--line);color:var(--text-mut);cursor:pointer;transition:.2s;}
+.share button:hover{border-color:rgba(88,101,242,0.4);color:var(--text);}
+
+.section-title{font-family:'Space Grotesk';font-size:20px;font-weight:600;margin-bottom:20px;}
+
+.related{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px;}
+.rel-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;cursor:pointer;transition:.2s;}
+.rel-card:hover{border-color:rgba(88,101,242,0.35);transform:translateY(-2px);}
+.rel-card .cat{font-size:10.5px;color:var(--blurple-2);font-family:'JetBrains Mono';margin-bottom:8px;}
+.rel-card h4{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:8px;}
+.rel-card .meta{font-size:11.5px;color:var(--text-dim);}
+
+/* comments */
+.comments-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.comment-input{
+  background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;margin-bottom:28px;
+}
+.comment-input textarea{
+  width:100%;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:14px;resize:none;min-height:60px;
+}
+.comment-input textarea::placeholder{color:var(--text-dim);}
+.comment-input-actions{display:flex;justify-content:flex-end;margin-top:10px;}
+.btn-primary{background:var(--blurple);color:white;border:none;padding:9px 18px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:.2s;}
+.btn-primary:hover{background:var(--blurple-2);}
+
+.comment{padding:18px 0;border-bottom:1px solid var(--line);}
+.comment.reply{margin-left:44px;padding-top:14px;}
+.c-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.c-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blurple),var(--blurple-2));flex-shrink:0;}
+.c-name{font-size:13.5px;font-weight:600;}
+.c-badge{font-size:10px;background:rgba(88,101,242,0.15);color:var(--blurple-2);padding:2px 7px;border-radius:6px;font-family:'JetBrains Mono';}
+.c-time{font-size:11.5px;color:var(--text-dim);margin-left:auto;}
+.c-pinned{font-size:10.5px;color:var(--warn);font-family:'JetBrains Mono';display:flex;align-items:center;gap:5px;margin-bottom:6px;}
+.c-body{font-size:14px;color:var(--text-mut);line-height:1.6;margin:6px 0 10px 44px;}
+.c-actions{display:flex;gap:16px;margin-left:44px;font-size:12px;color:var(--text-dim);}
+.c-actions span{cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s;}
+.c-actions span:hover{color:var(--blurple-2);}
+
+footer{border-top:1px solid var(--line);background:var(--bg-panel);margin-top:40px;padding:36px 28px;text-align:center;color:var(--text-dim);font-size:12px;}
+
+@media(max-width:700px){
+  .related{grid-template-columns:1fr;}
+  h1{font-size:28px;}
+  .cover{height:220px;}
+}
+</style>
+</head>
+<body>
+
+<div class="disclaimer">⚠️ Материал носит <b>развлекательный характер</b>. Информация не подтверждена официально и является слухом / мнением редакции.</div>
+
+<header>
+  <div class="nav-wrap">
+    <div class="logo"><span class="bracket">&lt;/&gt;</span>Insider<span class="logo-dot"></span></div>
+    <div class="breadcrumb"><a href="index.html">Главная</a> / <a href="#">Слухи</a> / Статья</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="article-head">
+    <span class="cat-tag">СЛУХ · НЕПОДТВЕРЖДЕНО</span>
+    <h1>Крупный RP-сервер готовит тайное слияние с конкурентом — источники в сообществе</h1>
+    <div class="article-meta">
+      <div class="author"><div class="av"></div><div><div style="color:var(--text);font-weight:600;">Аня Стрельцова</div><div>редактор Insider</div></div></div>
+      <div class="dot-sep"></div><span>26 июля 2026</span>
+      <div class="dot-sep"></div><span>🕐 6 мин чтения</span>
+      <div class="dot-sep"></div><span>👁 4 820 просмотров</span>
+      <div class="dot-sep"></div><span>💬 96 комментариев</span>
+    </div>
+  </div>
+
+  <div class="hype-banner">
+    <span class="lbl mono">УРОВЕНЬ ДОСТОВЕРНОСТИ</span>
+    <div class="hype-bar"><div class="hype-fill"></div></div>
+    <span class="hype-val">40% · Слух</span>
+  </div>
+
+  <div class="cover"></div>
+
+  <div class="content">
+    <p>По информации нескольких источников в закрытых чатах сообщества, два крупных ролевых сервера ведут переговоры об объединении команд модерации. Официальных заявлений администрации пока не поступало, поэтому редакция подчёркивает: это слух, а не подтверждённый факт.</p>
+    <blockquote>«Пока это лишь обсуждения внутри команды — никаких решений не принято», — сообщил один из модераторов на условиях анонимности.</blockquote>
+    <h3>Что известно на данный момент</h3>
+    <p>Сообщество заметило пересечения в составах модераторов и совместные тестовые ивенты на обоих серверах. Часть пользователей связывает это с падением активности на одной из площадок в последние недели.</p>
+    <p>Другие участники сообщества настроены скептически и считают, что слух раздут из-за случайного совпадения в расписании ивентов.</p>
+    <div class="disclaimer-inline">💡 Напоминаем: Discord Insider не располагает официальными подтверждениями от администрации серверов. Материал основан на слухах и открытых обсуждениях в сообществе и опубликован в развлекательных целях.</div>
+    <h3>Реакция сообщества</h3>
+    <p>Тема быстро попала в тренды тематических чатов — участники активно обсуждают возможные последствия для правил и структуры ролей на обоих серверах.</p>
+  </div>
+
+  <div class="tags">
+    <span>#слух</span><span>#rp-сервера</span><span>#администрация</span><span>#слияние</span><span>#discord</span>
+  </div>
+
+  <div class="engage-bar">
+    <div class="reactions">
+      <button class="liked">🔥 342</button>
+      <button>😂 88</button>
+      <button>😱 156</button>
+      <button>🤔 64</button>
+    </div>
+    <div class="share">
+      <button>↗</button><button>💬</button><button>🔗</button>
+    </div>
+  </div>
+
+  <div class="section-title">Читайте также</div>
+  <div class="related">
+    <div class="rel-card"><div class="cat mono">ДРАМЫ</div><h4>Конфликт модераторов вылился в публичный скандал</h4><div class="meta">4 мин · 2 340 просмотров</div></div>
+    <div class="rel-card"><div class="cat mono">НОВОСТИ</div><h4>Сервер Nexus Gaming обновил систему ролей</h4><div class="meta">3 мин · 1 890 просмотров</div></div>
+    <div class="rel-card"><div class="cat mono">УТЕЧКИ</div><h4>Скрины из закрытого чата разлетелись по сети</h4><div class="meta">5 мин · 5 120 просмотров</div></div>
+    <div class="rel-card"><div class="cat mono">ИНТЕРВЬЮ</div><h4>Основатель RP-сервера о причинах роста аудитории</h4><div class="meta">7 мин · 980 просмотров</div></div>
+  </div>
+
+  <div class="comments-head">
+    <div class="section-title" style="margin:0;">💬 Комментарии (96)</div>
+    <span style="font-size:13px;color:var(--text-dim);">Сортировка: <span style="color:var(--blurple-2);cursor:pointer;">популярные</span></span>
+  </div>
+
+  <div class="comment-input">
+    <textarea placeholder="Что вы думаете об этом?"></textarea>
+    <div class="comment-input-actions"><button class="btn-primary">Отправить</button></div>
+  </div>
+
+  <div class="comment">
+    <div class="c-pinned">📌 Закреплено модератором</div>
+    <div class="c-head"><div class="c-avatar"></div><span class="c-name">Redactor_Insider</span><span class="c-badge">РЕДАКЦИЯ</span><span class="c-time">1 ч назад</span></div>
+    <div class="c-body">Напоминаем: пока это неподтверждённая информация. Будем обновлять статью по мере появления фактов.</div>
+    <div class="c-actions"><span>👍 44</span><span>👎 2</span><span>Ответить</span><span>Жалоба</span></div>
+  </div>
+
+  <div class="comment">
+    <div class="c-head"><div class="c-avatar"></div><span class="c-name">nightowl_rp</span><span class="c-time">42 мин назад</span></div>
+    <div class="c-body">Если это правда, будет интересно посмотреть, как объединят системы ролей — они у серверов совсем разные.</div>
+    <div class="c-actions"><span>👍 28</span><span>👎 1</span><span>Ответить</span><span>Жалоба</span></div>
+  </div>
+  <div class="comment reply">
+    <div class="c-head"><div class="c-avatar"></div><span class="c-name">ashcoal</span><span class="c-time">30 мин назад</span></div>
+    <div class="c-body">Согласен, ролевая система у Ashborne гораздо сложнее — вряд ли её просто перенесут.</div>
+    <div class="c-actions"><span>👍 12</span><span>👎 0</span><span>Ответить</span><span>Жалоба</span></div>
+  </div>
+
+  <div class="comment">
+    <div class="c-head"><div class="c-avatar"></div><span class="c-name">skeptic_dc</span><span class="c-time">1 ч назад</span></div>
+    <div class="c-body">Звучит как очередной непроверенный слух. Подожду официальных заявлений.</div>
+    <div class="c-actions"><span>👍 19</span><span>👎 3</span><span>Ответить</span><span>Жалоба</span></div>
+  </div>
+</div>
+
+<footer>© 2026 Discord Insider · Развлекательный проект · Не является официальным ресурсом Discord Inc.</footer>
+
+</body>
+</html>

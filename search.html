@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Поиск — Discord Insider</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blurple:#5865F2; --blurple-2:#7983F5;
+  --bg-deep:#0B0D12; --bg-panel:#111827; --bg-elev:#18191C; --bg-card:#1B1F2A;
+  --line:rgba(255,255,255,0.07);
+  --text:#F5F6FA; --text-mut:#9BA1AE; --text-dim:#6B7280;
+  --danger:#ED4245; --success:#23A55A; --warn:#FAA61A;
+  --r-lg:22px; --r-md:16px; --r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:radial-gradient(1100px 550px at 15% -10%, rgba(88,101,242,0.16), transparent 60%), var(--bg-deep);
+  color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
+::selection{background:var(--blurple);color:white;}
+
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(20px) saturate(160%);background:rgba(11,13,18,0.72);border-bottom:1px solid var(--line);}
+.nav-wrap{max-width:1200px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:20px;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:18px;}
+.logo .bracket{color:var(--blurple-2);font-family:'JetBrains Mono';font-weight:500;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--blurple);box-shadow:0 0 12px var(--blurple);}
+.breadcrumb{font-size:13px;color:var(--text-dim);margin-left:auto;}
+.breadcrumb a:hover{color:var(--blurple-2);}
+
+.wrap{max-width:1200px;margin:0 auto;padding:40px 28px 80px;}
+
+/* big search hero */
+.search-hero{text-align:center;margin-bottom:8px;}
+.search-hero h1{font-family:'Space Grotesk';font-size:30px;font-weight:600;margin-bottom:22px;}
+
+.search-shell{position:relative;max-width:680px;margin:0 auto 10px;}
+.search-box{
+  display:flex;align-items:center;gap:12px;background:var(--bg-card);border:1px solid var(--line);
+  border-radius:18px;padding:16px 20px;transition:.2s;box-shadow:0 20px 50px -20px rgba(0,0,0,0.5);
+}
+.search-box:focus-within{border-color:rgba(88,101,242,0.5);box-shadow:0 0 0 4px rgba(88,101,242,0.14), 0 20px 50px -20px rgba(0,0,0,0.5);}
+.search-box svg{flex-shrink:0;opacity:.55;}
+.search-box input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:16px;}
+.search-box input::placeholder{color:var(--text-dim);}
+.search-box .clear-btn{width:26px;height:26px;border-radius:8px;background:var(--bg-elev);border:1px solid var(--line);color:var(--text-dim);cursor:pointer;font-size:12px;display:none;}
+
+/* autocomplete dropdown */
+.autocomplete{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg-card);border:1px solid var(--line);
+  border-radius:16px;padding:10px;box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);display:none;z-index:30;
+  backdrop-filter:blur(20px);
+}
+.autocomplete.show{display:block;}
+.ac-section{padding:6px 10px 4px;font-size:10.5px;color:var(--text-dim);font-family:'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase;}
+.ac-item{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:10px;cursor:pointer;transition:.15s;}
+.ac-item:hover{background:var(--bg-elev);}
+.ac-item .ic{width:32px;height:32px;border-radius:9px;background:var(--bg-elev);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.ac-item .txt .name{font-size:13.5px;}
+.ac-item .txt .name b{color:var(--blurple-2);font-weight:600;}
+.ac-item .txt .meta{font-size:11px;color:var(--text-dim);}
+
+.recent-tags{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:20px 0 40px;}
+.recent-tags span{font-size:12.5px;color:var(--text-mut);background:var(--bg-elev);border:1px solid var(--line);padding:7px 14px;border-radius:20px;cursor:pointer;transition:.2s;}
+.recent-tags span:hover{color:var(--blurple-2);border-color:rgba(88,101,242,0.4);}
+
+/* results layout */
+.results-layout{display:grid;grid-template-columns:270px 1fr;gap:32px;align-items:start;}
+
+.filter-panel{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;}
+.filter-panel h4{font-family:'Space Grotesk';font-size:14.5px;font-weight:600;margin-bottom:18px;}
+.f-group{margin-bottom:22px;}
+.f-group label{display:block;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono';letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px;}
+.f-opts{display:flex;flex-direction:column;gap:4px;}
+.f-check{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px;border-radius:9px;cursor:pointer;font-size:13px;color:var(--text-mut);transition:.15s;}
+.f-check:hover{background:var(--bg-elev);color:var(--text);}
+.f-check input{accent-color:var(--blurple);}
+.f-check .cnt{font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono';}
+.f-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.f-chip{font-size:12px;padding:7px 12px;border-radius:16px;border:1px solid var(--line);color:var(--text-mut);cursor:pointer;transition:.2s;background:var(--bg-elev);}
+.f-chip:hover{border-color:rgba(88,101,242,0.4);}
+.f-chip.active{background:var(--blurple);color:white;border-color:var(--blurple);}
+.date-range{display:flex;gap:8px;}
+.date-range input{width:100%;background:var(--bg-elev);border:1px solid var(--line);border-radius:9px;padding:8px 10px;color:var(--text);font-size:12px;outline:none;}
+.reset-btn{width:100%;text-align:center;font-size:12.5px;color:var(--blurple-2);cursor:pointer;padding:8px;margin-top:4px;}
+
+.results-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.results-head .count{font-size:14px;color:var(--text-mut);}
+.results-head .count b{color:var(--text);}
+.sort-select{background:var(--bg-elev);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:8px;cursor:pointer;}
+
+.res-list{display:flex;flex-direction:column;gap:14px;}
+.res-card{
+  display:flex;gap:16px;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:16px;cursor:pointer;transition:.2s;
+}
+.res-card:hover{border-color:rgba(88,101,242,0.35);transform:translateY(-2px);}
+.res-thumb{width:100px;height:80px;border-radius:12px;background:linear-gradient(135deg,#232A3D,#171B26);flex-shrink:0;}
+.res-body{flex:1;}
+.res-tag{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:7px;font-family:'JetBrains Mono';display:inline-block;margin-bottom:8px;}
+.tag-news{background:rgba(88,101,242,0.15);color:var(--blurple-2);}
+.tag-rumor{background:rgba(250,166,26,0.15);color:var(--warn);}
+.tag-drama{background:rgba(237,66,69,0.15);color:var(--danger);}
+.res-body h3{font-size:15px;font-weight:600;margin-bottom:6px;line-height:1.4;}
+.res-body p{font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:8px;}
+.res-body mark{background:rgba(88,101,242,0.25);color:var(--blurple-2);border-radius:3px;padding:0 2px;}
+.res-meta{display:flex;gap:14px;font-size:11.5px;color:var(--text-dim);font-family:'JetBrains Mono';}
+
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:36px;}
+.pagination button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg-elev);color:var(--text-mut);cursor:pointer;font-size:13px;font-family:'JetBrains Mono';transition:.2s;}
+.pagination button:hover{border-color:rgba(88,101,242,0.4);color:var(--text);}
+.pagination button.active{background:var(--blurple);color:white;border-color:var(--blurple);}
+
+@media(max-width:900px){
+  .results-layout{grid-template-columns:1fr;}
+  .res-card{flex-direction:column;}
+  .res-thumb{width:100%;height:140px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <div class="logo"><span class="bracket">&lt;/&gt;</span>Insider<span class="logo-dot"></span></div>
+    <div class="breadcrumb"><a href="index.html">Главная</a> / Поиск</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="search-hero">
+    <h1>Найдите новость, слух или сервер</h1>
+  </div>
+
+  <div class="search-shell">
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input type="text" id="searchInput" placeholder="Например: Nexus Gaming, слияние серверов, giveaway..." value="слияние">
+      <button class="clear-btn" id="clearBtn">✕</button>
+    </div>
+
+    <div class="autocomplete show" id="autocomplete">
+      <div class="ac-section">Статьи</div>
+      <div class="ac-item"><div class="ic">📰</div><div class="txt"><div class="name">Крупный RP-сервер готовит тайное <b>слияние</b> с конкурентом</div><div class="meta">Слухи · 4 820 просмотров</div></div></div>
+      <div class="ac-item"><div class="ic">📰</div><div class="txt"><div class="name">Обсуждение возможного <b>слияния</b> двух гейминг-серверов</div><div class="meta">Новости · 1 240 просмотров</div></div></div>
+      <div class="ac-section">Серверы</div>
+      <div class="ac-item"><div class="ic">🖥</div><div class="txt"><div class="name">Nexus Gaming</div><div class="meta">184 200 участников · #1 в рейтинге</div></div></div>
+      <div class="ac-section">Теги</div>
+      <div class="ac-item"><div class="ic">🏷</div><div class="txt"><div class="name">#<b>слияние</b></div><div class="meta">18 материалов</div></div></div>
+    </div>
+  </div>
+
+  <div class="recent-tags">
+    <span>🕐 giveaway Nexus</span><span>🕐 админ Velvet Lounge</span><span>🔥 утечка скринов</span><span>🔥 рейтинг серверов июль</span>
+  </div>
+
+  <div class="results-layout">
+    <!-- FILTERS -->
+    <aside class="filter-panel">
+      <h4>🎛 Фильтры</h4>
+
+      <div class="f-group">
+        <label>Категория</label>
+        <div class="f-opts">
+          <label class="f-check"><span><input type="checkbox" checked> Слухи</span><span class="cnt">18</span></label>
+          <label class="f-check"><span><input type="checkbox"> Новости</span><span class="cnt">42</span></label>
+          <label class="f-check"><span><input type="checkbox"> Скандалы</span><span class="cnt">9</span></label>
+          <label class="f-check"><span><input type="checkbox"> Обновления серверов</span><span class="cnt">27</span></label>
+          <label class="f-check"><span><input type="checkbox"> Утечки</span><span class="cnt">11</span></label>
+        </div>
+      </div>
+
+      <div class="f-group">
+        <label>Дата</label>
+        <div class="f-chips">
+          <div class="f-chip active">24 часа</div><div class="f-chip">Неделя</div><div class="f-chip">Месяц</div><div class="f-chip">Год</div>
+        </div>
+        <div class="date-range" style="margin-top:10px;">
+          <input type="text" placeholder="дд.мм.гггг">
+          <input type="text" placeholder="дд.мм.гггг">
+        </div>
+      </div>
+
+      <div class="f-group">
+        <label>Популярность</label>
+        <div class="f-chips">
+          <div class="f-chip active">Любая</div><div class="f-chip">🔥 Топ</div><div class="f-chip">💬 Обсуждаемое</div>
+        </div>
+      </div>
+
+      <div class="f-group">
+        <label>Достоверность</label>
+        <div class="f-chips">
+          <div class="f-chip">Подтверждено</div><div class="f-chip active">Слух</div><div class="f-chip">Опровергнуто</div>
+        </div>
+      </div>
+
+      <div class="reset-btn">Сбросить фильтры</div>
+    </aside>
+
+    <!-- RESULTS -->
+    <div>
+      <div class="results-head">
+        <div class="count">Найдено <b>18</b> результатов по запросу «слияние»</div>
+        <div class="sort-select">Сортировка: по релевантности ⌄</div>
+      </div>
+
+      <div class="res-list">
+        <div class="res-card">
+          <div class="res-thumb"></div>
+          <div class="res-body">
+            <span class="res-tag tag-rumor">СЛУХ</span>
+            <h3>Крупный RP-сервер готовит тайное <mark>слияние</mark> с конкурентом</h3>
+            <p>По информации нескольких источников в закрытых чатах сообщества, два крупных ролевых сервера ведут переговоры об объединении команд модерации...</p>
+            <div class="res-meta"><span>👁 4 820</span><span>💬 96</span><span>26 июля 2026</span></div>
+          </div>
+        </div>
+        <div class="res-card">
+          <div class="res-thumb"></div>
+          <div class="res-body">
+            <span class="res-tag tag-news">НОВОСТИ</span>
+            <h3>Сообщество обсуждает возможное <mark>слияние</mark> двух гейминг-серверов</h3>
+            <p>Пользователи заметили пересечения в расписании ивентов и составах модерации на обоих серверах...</p>
+            <div class="res-meta"><span>👁 1 240</span><span>💬 34</span><span>24 июля 2026</span></div>
+          </div>
+        </div>
+        <div class="res-card">
+          <div class="res-thumb"></div>
+          <div class="res-body">
+            <span class="res-tag tag-drama">ДРАМА</span>
+            <h3>После слухов о <mark>слиянии</mark> часть модераторов покинула сервер</h3>
+            <p>Конфликт вокруг возможного объединения серверов привёл к волне отставок среди модераторской команды...</p>
+            <div class="res-meta"><span>👁 3 102</span><span>💬 71</span><span>22 июля 2026</span></div>
+          </div>
+        </div>
+        <div class="res-card">
+          <div class="res-thumb"></div>
+          <div class="res-body">
+            <span class="res-tag tag-news">НОВОСТИ</span>
+            <h3>Официальный комментарий администрации по поводу слухов о <mark>слиянии</mark></h3>
+            <p>Администрация одного из серверов кратко прокомментировала обсуждения в сообществе, не подтвердив и не опровергнув информацию...</p>
+            <div class="res-meta"><span>👁 2 415</span><span>💬 58</span><span>21 июля 2026</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <button>‹</button><button class="active">1</button><button>2</button><button>3</button><button>›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const input = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearBtn');
+const autocomplete = document.getElementById('autocomplete');
+function syncClear(){ clearBtn.style.display = input.value ? 'block' : 'none'; }
+syncClear();
+input.addEventListener('input', syncClear);
+input.addEventListener('focus', ()=> autocomplete.classList.add('show'));
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.search-shell')) autocomplete.classList.remove('show');
+  else autocomplete.classList.add('show');
+});
+clearBtn.addEventListener('click', ()=>{ input.value=''; syncClear(); input.focus(); });
+
+document.querySelectorAll('.f-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    chip.parentElement.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

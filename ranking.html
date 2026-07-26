@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Рейтинг серверов — Discord Insider</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blurple:#5865F2; --blurple-2:#7983F5;
+  --bg-deep:#0B0D12; --bg-panel:#111827; --bg-elev:#18191C; --bg-card:#1B1F2A;
+  --line:rgba(255,255,255,0.07);
+  --text:#F5F6FA; --text-mut:#9BA1AE; --text-dim:#6B7280;
+  --danger:#ED4245; --success:#23A55A; --warn:#FAA61A; --gold:#F5C842; --silver:#C7CCD6; --bronze:#D08A52;
+  --r-lg:22px; --r-md:16px; --r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:radial-gradient(1100px 550px at 15% -10%, rgba(88,101,242,0.16), transparent 60%), var(--bg-deep);
+  color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
+::selection{background:var(--blurple);color:white;}
+
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(20px) saturate(160%);background:rgba(11,13,18,0.72);border-bottom:1px solid var(--line);}
+.nav-wrap{max-width:1200px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:20px;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:18px;}
+.logo .bracket{color:var(--blurple-2);font-family:'JetBrains Mono';font-weight:500;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--blurple);box-shadow:0 0 12px var(--blurple);}
+.breadcrumb{font-size:13px;color:var(--text-dim);margin-left:auto;}
+.breadcrumb a:hover{color:var(--blurple-2);}
+
+.wrap{max-width:1100px;margin:0 auto;padding:44px 28px 80px;}
+
+.page-head{text-align:center;margin-bottom:36px;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:11.5px;color:var(--blurple-2);background:rgba(88,101,242,0.1);border:1px solid rgba(88,101,242,0.25);padding:6px 12px;border-radius:20px;margin-bottom:16px;}
+.page-head h1{font-family:'Space Grotesk';font-size:32px;font-weight:700;margin-bottom:10px;}
+.page-head p{color:var(--text-mut);font-size:14.5px;max-width:480px;margin:0 auto;}
+
+/* podium */
+.podium{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:16px;align-items:end;margin:40px 0 44px;}
+.p-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 18px;text-align:center;position:relative;transition:.25s;cursor:pointer;}
+.p-card:hover{transform:translateY(-4px);}
+.p-card.gold{padding-top:30px;border-color:rgba(245,200,66,0.35);background:linear-gradient(160deg,rgba(245,200,66,0.08),var(--bg-card));}
+.p-card.silver{border-color:rgba(199,204,214,0.25);}
+.p-card.bronze{border-color:rgba(208,138,82,0.25);}
+.p-rank{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:14px;color:#111;}
+.p-rank.gold-bg{background:var(--gold);}
+.p-rank.silver-bg{background:var(--silver);}
+.p-rank.bronze-bg{background:var(--bronze);}
+.p-avatar{width:64px;height:64px;border-radius:18px;margin:0 auto 14px;background:linear-gradient(135deg,var(--blurple),var(--blurple-2));display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:22px;}
+.p-card.gold .p-avatar{width:78px;height:78px;font-size:26px;}
+.p-name{font-family:'Space Grotesk';font-weight:600;font-size:15.5px;margin-bottom:4px;}
+.p-cat{font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono';margin-bottom:14px;}
+.p-members{font-family:'Space Grotesk';font-size:20px;font-weight:700;margin-bottom:2px;}
+.p-label{font-size:11px;color:var(--text-dim);margin-bottom:12px;}
+.p-trend{font-size:11.5px;font-family:'JetBrains Mono';font-weight:600;padding:4px 10px;border-radius:8px;display:inline-block;}
+.p-trend.up{color:var(--success);background:rgba(35,165,90,0.12);}
+
+/* filters bar */
+.filters-bar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:22px;}
+.chips{display:flex;gap:9px;flex-wrap:wrap;}
+.chip{font-size:12.5px;padding:8px 15px;border-radius:20px;border:1px solid var(--line);color:var(--text-mut);cursor:pointer;transition:.2s;background:var(--bg-elev);}
+.chip:hover{border-color:rgba(88,101,242,0.4);color:var(--text);}
+.chip.active{background:var(--blurple);color:white;border-color:var(--blurple);}
+.mini-search{display:flex;align-items:center;gap:8px;background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:9px 14px;width:220px;}
+.mini-search input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%;}
+.mini-search input::placeholder{color:var(--text-dim);}
+
+/* leaderboard table */
+.board{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;}
+.board-row{
+  display:grid;grid-template-columns:44px 1fr 130px 110px 130px 90px;align-items:center;gap:14px;
+  padding:16px 20px;border-bottom:1px solid var(--line);cursor:pointer;transition:.15s;
+}
+.board-row:last-child{border-bottom:none;}
+.board-row:hover{background:var(--bg-elev);}
+.board-row.head{font-size:10.5px;color:var(--text-dim);font-family:'JetBrains Mono';text-transform:uppercase;letter-spacing:.4px;cursor:default;}
+.board-row.head:hover{background:none;}
+.b-rank{font-family:'JetBrains Mono';font-size:14px;color:var(--text-dim);text-align:center;}
+.b-server{display:flex;align-items:center;gap:12px;}
+.b-avatar{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2A3149,#1A1E29);flex-shrink:0;}
+.b-name{font-size:14px;font-weight:600;}
+.b-tag{font-size:10.5px;color:var(--text-dim);font-family:'JetBrains Mono';}
+.b-cat span{font-size:11px;padding:4px 10px;border-radius:7px;background:rgba(88,101,242,0.12);color:var(--blurple-2);font-family:'JetBrains Mono';}
+.b-cat span.rp{background:rgba(250,166,26,0.12);color:var(--warn);}
+.b-members{font-family:'JetBrains Mono';font-size:13.5px;}
+.b-trend{font-family:'JetBrains Mono';font-size:12.5px;font-weight:600;}
+.b-trend.up{color:var(--success);}
+.b-trend.down{color:var(--danger);}
+.b-trend.flat{color:var(--text-dim);}
+.b-spark{display:flex;align-items:flex-end;gap:2px;height:26px;}
+.b-spark div{width:4px;border-radius:2px;background:var(--blurple-2);opacity:.7;}
+
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:32px;}
+.pagination button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg-elev);color:var(--text-mut);cursor:pointer;font-size:13px;font-family:'JetBrains Mono';transition:.2s;}
+.pagination button:hover{border-color:rgba(88,101,242,0.4);color:var(--text);}
+.pagination button.active{background:var(--blurple);color:white;border-color:var(--blurple);}
+
+@media(max-width:800px){
+  .podium{grid-template-columns:1fr;}
+  .p-card.gold{order:-1;}
+  .board-row{grid-template-columns:32px 1fr 80px;}
+  .board-row span:nth-child(4), .board-row span:nth-child(5){display:none;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <div class="logo"><span class="bracket">&lt;/&gt;</span>Insider<span class="logo-dot"></span></div>
+    <div class="breadcrumb"><a href="index.html">Главная</a> / Рейтинг серверов</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="eyebrow">🏆 ОБНОВЛЯЕТСЯ ЕЖЕДНЕВНО</div>
+    <h1>Рейтинг Discord-серверов</h1>
+    <p>По количеству участников, приросту аудитории и активности за последние 7 дней. Рейтинг составлен редакцией на основе открытых данных.</p>
+  </div>
+
+  <!-- PODIUM -->
+  <div class="podium">
+    <div class="p-card silver">
+      <div class="p-rank silver-bg">2</div>
+      <div class="p-avatar">MC</div>
+      <div class="p-name">MythCraft RP</div>
+      <div class="p-cat">RP · РОЛЕВОЙ</div>
+      <div class="p-members">96 800</div>
+      <div class="p-label">участников</div>
+      <div class="p-trend up">↑ 12 позиций</div>
+    </div>
+    <div class="p-card gold">
+      <div class="p-rank gold-bg">1</div>
+      <div class="p-avatar">NX</div>
+      <div class="p-name">Nexus Gaming</div>
+      <div class="p-cat">GAMING · ИГРОВОЙ</div>
+      <div class="p-members">184 200</div>
+      <div class="p-label">участников</div>
+      <div class="p-trend up">↑ 3 позиции</div>
+    </div>
+    <div class="p-card bronze">
+      <div class="p-rank bronze-bg">3</div>
+      <div class="p-avatar">AB</div>
+      <div class="p-name">Ashborne RP</div>
+      <div class="p-cat">RP · РОЛЕВОЙ</div>
+      <div class="p-members">71 340</div>
+      <div class="p-label">участников</div>
+      <div class="p-trend up" style="color:var(--danger);background:rgba(237,66,69,0.12);">↓ 1 позиция</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <div class="chips">
+      <div class="chip active">Все</div>
+      <div class="chip">🎮 Игровые</div>
+      <div class="chip">🎭 RP</div>
+      <div class="chip">📈 Рост недели</div>
+      <div class="chip">🆕 Новые в топе</div>
+    </div>
+    <div class="mini-search">
+      <span style="opacity:.6">🔍</span>
+      <input type="text" placeholder="Найти сервер...">
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="board">
+    <div class="board-row head">
+      <span>#</span><span>Сервер</span><span>Категория</span><span>Участники</span><span>Динамика 7д</span><span>Тренд</span>
+    </div>
+    <div id="boardBody"></div>
+  </div>
+
+  <div class="pagination">
+    <button>‹</button><button class="active">1</button><button>2</button><button>3</button><button>›</button>
+  </div>
+</div>
+
+<script>
+const servers = [
+  {rank:4,  name:'Velvet Lounge',   tag:'#4021', cat:'gaming', members:'54 010', trend:'up',   diff:'↑ 7'},
+  {rank:5,  name:'Obsidian Realms', tag:'#9910', cat:'rp',     members:'48 720', trend:'up',   diff:'↑ 2'},
+  {rank:6,  name:'PixelForge',      tag:'#1147', cat:'gaming', members:'41 990', trend:'down', diff:'↓ 3'},
+  {rank:7,  name:'Twilight Court',  tag:'#5502', cat:'rp',     members:'38 210', trend:'flat', diff:'– 0'},
+  {rank:8,  name:'ClutchZone',      tag:'#7734', cat:'gaming', members:'35 660', trend:'up',   diff:'↑ 5'},
+  {rank:9,  name:'Ironvale RP',     tag:'#2288', cat:'rp',     members:'31 450', trend:'down', diff:'↓ 1'},
+  {rank:10, name:'Frostbyte',       tag:'#6601', cat:'gaming', members:'28 990', trend:'up',   diff:'↑ 9'},
+];
+const catLabel = {gaming:'Игровой', rp:'RP'};
+const body = document.getElementById('boardBody');
+servers.forEach(s=>{
+  const row = document.createElement('div');
+  row.className='board-row';
+  const bars = Array.from({length:12}, ()=> 20 + Math.random()*80);
+  const sparkHtml = bars.map(h=>`<div style="height:${h}%"></div>`).join('');
+  row.innerHTML = `
+    <span class="b-rank">${s.rank}</span>
+    <div class="b-server"><div class="b-avatar"></div><div><div class="b-name">${s.name}</div><div class="b-tag">${s.tag}</div></div></div>
+    <span class="b-cat"><span class="${s.cat==='rp'?'rp':''}">${catLabel[s.cat]}</span></span>
+    <span class="b-members">${s.members}</span>
+    <div class="b-spark">${sparkHtml}</div>
+    <span class="b-trend ${s.trend}">${s.diff}</span>`;
+  body.appendChild(row);
+});
+
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
